@@ -6,10 +6,10 @@
         <thead>
         <tr>
             <th width=20>#</th>
-            <th width=120>제목</th>
-            <th width=50>글쓴이</th>
-            <th width=70>등록일</th>
-            <th width=20>조회수</th>
+            <th width=120>Title</th>
+            <th width=50>User</th>
+            <th width=70>Reg Date</th>
+            <th width=20>Hits</th>
         </tr>
         </thead>
 
@@ -27,7 +27,7 @@
         </tr>
         <tr ng-show="!guestMsgs.length">
             <td colspan="6" style="text-align :center">
-                <span class="text-warning">데이터가 없습니다.</span>
+                <span class="text-warning">No data exists.</span>
             </td>
         </tr>
        </tbody>
@@ -48,12 +48,13 @@
 <div class="pull-right">
 <table>
     <tr>
+        <!--
         <td>
             <select name="search_option" class="form-control input-sm auto" >
-                <option value="opt_title">제목</option>
-                <option value="opt_content">내용</option>
-                <option value="opt_title_or_content">제목+내용</option>
-                <option value="opt_user">글쓴이</option>
+                <option value="opt_title">title</option>
+                <option value="opt_content">contents</option>
+                <option value="opt_title_or_content">title+contents</option>
+                <option value="opt_user">user</option>
             </select>
         </td>
         <td>
@@ -61,12 +62,12 @@
         </td>
         <td>
             <button class="btn btn-info btn-sm" style="margin: 0;" ng-click="GoToUrl('/search')">
-                <span class="glyphicon glyphicon-search"></span> 검색
+                <span class="glyphicon glyphicon-search"></span> Search
             </button>
-        </td>
+        </td>-->
         <td>
             <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
-                <span class="glyphicon glyphicon-pencil"></span> 글쓰기
+                <span class="glyphicon glyphicon-pencil"></span> Write
             </button>
         </td>
     </tr>

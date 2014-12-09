@@ -1,14 +1,12 @@
 
 <div ng-controller="PaginationCtrl">
 <ul class="pagination pagination-sm" style="margin: 0;" ng-if="1 < totalPages">
-    <li ng-class="{disabled: disabledFirst}"><a href="" ng-click="showFirstPageSet()">처음</a></li>
-    <li ng-class="{disabled: disabledPrevious}"><a href="" ng-click="showPreviousPageSet()">이전</a></li>
+    <li ng-class="{disabled: disabledFirst}"><a href="" ng-click="showFirstPageSet()">First</a></li>
+    <li ng-class="{disabled: disabledPrevious}"><a href="" ng-click="showPreviousPageSet()">Previous</a></li>
     <li ng-repeat="page in pageSetArray" ng-class="{active: activeIndexAry[ $index ], disabled: disabledIndexAry[ $index ]}">
         <a href="#/list/{{page}}">{{page}}</a>
     </li>
-    <li ng-class="{disabled: disabledNext}"><a href="" ng-click="showNextPageSet()">다음</a></li>
-    <li ng-class="{disabled: disabledLast}"><a href="" ng-click="showLastPageSet()">마지막</a></li>
+    <li ng-class="{disabled: disabledNext}"><a href="" ng-click="showNextPageSet()">Next</a></li>
+    <li ng-class="{disabled: disabledLast}"><a href="" ng-click="showLastPageSet()">Last</a></li>
 </ul>
 </div>
-<!-- <li>{{testInFetchCtrl}}</li> 부모 scope 접근 가능 -->
-<dad></dad>

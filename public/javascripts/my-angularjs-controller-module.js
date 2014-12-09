@@ -6,30 +6,42 @@
 
 var myControllerModule = angular.module('myControllerModule', ['ngRoute','myServiceModule']);
 
+var nIndexStart;
+var i;
+var activatePageIndex;
+var pageIndex;
+var nextFirstPageIndex;
 //-----------------------------------------------------------------------------
 //controller : get paged data
 myControllerModule.controller('FetchCtrl',
     ['$rootScope','$scope', '$http','$location','$routeParams','myHttpService','myGlobalDataService',
     function($rootScope,$scope, $http, $location, $routeParams, myHttpService,myGlobalDataService) {
-        //--------------------------------------------------------------------
-        //$scope.GoToUrl중복을 막기 위해 $rootScope 에 저장. 목록조회가 초기화면이므로...
-        $rootScope.GoToUrl = function ( url ) {
-            $location.path( url );
-        };
-
-        $rootScope.GoToPage = function ( page ) {
-            $location.path( '/list/'+ page );
-        };
-        //--------------------------------------------------------------------
-
         myGlobalDataService.pageInfo.listPerPage = 3; //TODO : from option
         myGlobalDataService.pageInfo.currentPage = $routeParams.page;
 
+        //--------------------------------------------------------------------
+        //공통사용되는 함수를 $rootScope 에 정의...
+        $rootScope.GoToUrl = function ( url ) {
+            $location.path( url );
+        };
+        $rootScope.GoToPage = function ( page ) {
+            $location.path( '/list/'+ page );
+        };
+
+        //--------------------------------------------------------------------
+        //각 페이지에 표시될 게시물 순번을 생성한다.
+        nIndexStart = ((myGlobalDataService.pageInfo.currentPage-1) * myGlobalDataService.pageInfo.listPerPage)+1 ;
+        console.log( "nIndexStart ="+nIndexStart ); //debug
+        $scope.listIndexAry=[];
+        for (i = 0; i < myGlobalDataService.pageInfo.listPerPage; i++) {
+            $scope.listIndexAry.push ( nIndexStart+i );
+            console.log( "push :"+(nIndexStart+i) ); //debug
+        }
+
+        //--------------------------------------------------------------------
         myHttpService.getPagedList($routeParams.page, myGlobalDataService.pageInfo.listPerPage).success(function(data) {
             $scope.guestMsgs = data;
         });
-
-        //$scope.testInFetchCtrl = "100"; //--> pagination directive에서도 접근 가능하다.(부모 scope접근)
     }]);
 
 //-----------------------------------------------------------------------------
@@ -39,28 +51,24 @@ myControllerModule.controller('ViewCtrl', ['$scope', '$routeParams','$location',
 
         $scope.currentPage = myGlobalDataService.pageInfo.currentPage;
 
-        //msgObjId --> angularjs routing에 설정된 문자열과 동일해야함.
         myHttpService.view($routeParams.msgObjId)
             .success(function(data) {
-            console.log("#ViewDataCtrl data:"+data); //debug
             $scope.msgObjId = $routeParams.msgObjId;
             $scope.userMsg = data;
 
-            myGlobalDataService.already_fetched_data=data; //데이터 공유 위해 설정
+            myGlobalDataService.already_fetched_data=data; //for editing
         });
 
         //delete
         $scope.deleteMsg = function (){
             myHttpService.delete($routeParams.msgObjId)
                 .success(function() {
-                    console.log("*** delete OK"); //debug
                     $location.path( "/list/"+$scope.currentPage );
                 })
                 .error (function () {
                     console.log('deleteMsg Error'); //debug
                     $location.path( "/list/1" );
-                })
-            ;
+                });
         };
 
         //edit
@@ -77,12 +85,10 @@ myControllerModule.controller('WriteCtrl', ['$scope', '$location','myGlobalDataS
         $scope.currentPage = myGlobalDataService.pageInfo.currentPage;
         $scope.formData = {};
         $scope.CreateGuestMsg = function() {
-            if ($scope.formData.contents != undefined) {
-
+            if ($scope.formData.user != undefined && $scope.formData.title != undefined && $scope.formData.contents != undefined) {
                 myHttpService.create($scope.formData)
                 .success(function() {
                     $scope.formData = {}; //reset
-
                     $location.path( "/list/1" );
                 })
                 .error (function () {
@@ -99,11 +105,9 @@ myControllerModule.controller('EditCtrl', ['$scope','$location','myGlobalDataSer
         $scope.currentPage = myGlobalDataService.pageInfo.currentPage;
         $scope.formData = myGlobalDataService.already_fetched_data;
 
-        console.log('#EditDataCtrl already_fetched_data._id:' + myGlobalDataService.already_fetched_data._id); //debug
-
         $scope.UpdateGuestMsg = function() {
-            if ($scope.formData.contents != undefined) {
-                //$http.post('/apis/edit', $scope.formData)
+            if ($scope.formData.contents.length > 0) {
+                console.log("contents valid");
                 myHttpService.update($scope.formData)
                     .success(function() {
                         $scope.formData = {}; //reset
@@ -112,22 +116,20 @@ myControllerModule.controller('EditCtrl', ['$scope','$location','myGlobalDataSer
                     .error (function () {
                         console.log('update Error'); //debug
                     });
+            }else{
+                console.log("contents invalid!!");
+                //TODO
             }
         };
     }]);
 
 
 //-----------------------------------------------------------------------------
-//controller : for pagination directive
+//controller : for pagination
 myControllerModule.controller('PaginationCtrl', ['$scope','$http','$location','myHttpService','myGlobalDataService',
     function($scope, $http,$location,myHttpService,myGlobalDataService) {
-        // 페이지 버튼 누를때마다 호출됨!! list/1 처럼 url이동하면서 갱신시에 호출..XXX
+        // 페이지 버튼 누를때마다 호출됨!!
         console.log( "+++++++ PaginationCtrl start"  );
-        var i;
-        var activatePageIndex;
-        var nIndexStart;
-        var pageIndex;
-        var nextFirstPageIndex;
 
         //--------------------------------------------------------------
         function setDisabledFirstPreviousNextLastPageButton(disabledFirst,disabledPrevious,disabledNext,disabledLast){
@@ -137,7 +139,6 @@ myControllerModule.controller('PaginationCtrl', ['$scope','$http','$location','m
             $scope.disabledLast = disabledLast;
         }
 
-        //--------------------------------------------------------------
         myHttpService.count()
             .success(function(data) {
 
@@ -189,15 +190,6 @@ myControllerModule.controller('PaginationCtrl', ['$scope','$http','$location','m
                     $scope.disabledLast = 1;
                 }
 
-                //각 페이지에 표시될 게시물 순번을 생성한다.
-                nIndexStart = ((myGlobalDataService.pageInfo.currentPage-1) * myGlobalDataService.pageInfo.listPerPage)+1 ;
-                //console.log( "nIndexStart ="+nIndexStart ); //debug
-                $scope.listIndexAry=[];
-
-                for (i = 0; i < myGlobalDataService.pageInfo.listPerPage; i++) {
-                    $scope.listIndexAry.push ( nIndexStart+i );
-                }
-
                 $scope.pageSetArray=[];
                 $scope.activeIndexAry=[];
                 for (i = 0; i < myGlobalDataService.pageInfo.maxVisiblePages; i++) {
@@ -216,6 +208,7 @@ myControllerModule.controller('PaginationCtrl', ['$scope','$http','$location','m
             .error (function () {
                 console.log( "PaginationCtrl Error!: "  );
             });
+
 
         //--------------------------------------------------------------
         $scope.showFirstPageSet = function(){

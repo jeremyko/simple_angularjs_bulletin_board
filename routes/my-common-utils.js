@@ -2,7 +2,6 @@
  * Created by kojunghyun on 14. 12. 3..
  */
 //-----------------------------------------------------------------------------
-//공통 날자 함수 : express.js에서 사용하는것.
 var my_utils={};
 
 my_utils.getTimeStamp =  function () {

@@ -12,7 +12,6 @@ var my_utils = require('./my-common-utils'); //date functions
 
 //-----------------------------------------------------------------------------
 router.get('/countAll', function(req, res) {
-    console.log("/countAll");//debug
     db.GuestBookMsgs.count(function(error,result){
         if(!error) {
             console.log("count :"+result);
@@ -37,7 +36,6 @@ router.get('/list/:page/:listPerPage', function(req, res) {
         });
     }else{
         db.GuestBookMsgs.find().sort({_id:-1}).skip((req.params.page-1)*parseInt(req.params.listPerPage)  ).limit(parseInt(req.params.listPerPage)  , function(err, page_msgs) {
-            console.log('******** list page : skip='+(req.params.page-1)*parseInt(req.params.listPerPage)  ); //debug
             if (err) {
                 console.log('******** list page error ************'); //debug
                 res.send(err)
