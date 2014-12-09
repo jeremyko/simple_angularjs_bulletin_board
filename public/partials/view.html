@@ -1,0 +1,19 @@
+<h3>{{userMsg.title}}</h3>
+<textarea readonly  class="form-control" rows="15">{{userMsg.contents}}</textarea>
+
+<br>
+
+<button class="btn btn-primary btn-sm" ng-click="GoToPage(currentPage)">
+    <span class="glyphicon  glyphicon-th-list"></span>  돌아가기
+</button>
+<button class="btn btn-info btn-sm" ng-click="editMsg()">
+    <span class="glyphicon  glyphicon-pencil"></span>  수정
+</button>
+
+<button class="btn btn-danger btn-sm" ng-click="deleteMsg()">
+    <span class="glyphicon glyphicon-remove"></span>  삭제
+</button>
+
+
+
+

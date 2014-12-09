@@ -1,0 +1,80 @@
+<!--<div   style="text-align: right;">총게시물 {{totalCount}}건</div>-->
+
+<div class="panel panel-default">
+
+    <table class="table table-hover table-condensed" >
+        <thead>
+        <tr>
+            <th width=20>#</th>
+            <th width=120>제목</th>
+            <th width=50>글쓴이</th>
+            <th width=70>등록일</th>
+            <th width=20>조회수</th>
+        </tr>
+        </thead>
+
+       <tbody>
+        <tr ng-repeat="msg in guestMsgs">
+            <td width=20> {{listIndexAry[ $index ] }}</td>
+            <td width=120>
+                <a href="#/view/{{msg._id}}">{{msg.title}}</a>
+            </td>
+
+            <td width=50>{{msg.user}}</td>
+            <td width=70><small>{{msg.reg_date}}</small></td>
+            <td width=20><span class="badge">{{msg.hits}}</span></td>
+
+        </tr>
+        <tr ng-show="!guestMsgs.length">
+            <td colspan="6" style="text-align :center">
+                <span class="text-warning">데이터가 없습니다.</span>
+            </td>
+        </tr>
+       </tbody>
+    </table>
+</div>
+
+
+<div class="pull-left">
+<table>
+    <tr>
+        <td>
+            <my-pagination-directive/>
+        </td>
+    </tr>
+</table>
+</div>
+
+<div class="pull-right">
+<table>
+    <tr>
+        <td>
+            <select name="search_option" class="form-control input-sm auto" >
+                <option value="opt_title">제목</option>
+                <option value="opt_content">내용</option>
+                <option value="opt_title_or_content">제목+내용</option>
+                <option value="opt_user">글쓴이</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="form-control" style="margin: 0;" placeholder="Search">
+        </td>
+        <td>
+            <button class="btn btn-info btn-sm" style="margin: 0;" ng-click="GoToUrl('/search')">
+                <span class="glyphicon glyphicon-search"></span> 검색
+            </button>
+        </td>
+        <td>
+            <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
+                <span class="glyphicon glyphicon-pencil"></span> 글쓰기
+            </button>
+        </td>
+    </tr>
+</table>
+</div>
+
+
+
+
+
+
