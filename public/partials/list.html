@@ -39,7 +39,9 @@
 <table>
     <tr>
         <td>
-            <my-pagination-directive/>
+            <my-pagination-directive max-visible-pages="5"
+                                     count-all-api-url="apis/countAll"
+                                     paged-list-api-url-prefix="/list/"></my-pagination-directive>
         </td>
     </tr>
 </table>
