@@ -17,19 +17,13 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             pagedListApiUrlPrefix:'@'
         },
 
-        controller: function($scope,$http,$location,myHttpService,myGlobalDataService){
+        //TODO : myGlobalDataService 의 종속성을 제거할 방법은??
+        controller: function($scope,$http,$location,myGlobalDataService){
             console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
                 " $scope.countAllApiUrl="+$scope.countAllApiUrl+
                 " $scope.pagedListApiUrlPrefix="+$scope.pagedListApiUrlPrefix); //debug
 
             myGlobalDataService.pageInfo.maxVisiblePages = parseInt( $scope.maxVisiblePages);
-
-            function setDisabledFirstPreviousNextLastPageButton(disabledFirst,disabledPrevious,disabledNext,disabledLast){
-                $scope.disabledFirst = disabledFirst;
-                $scope.disabledPrevious = disabledPrevious;
-                $scope.disabledNext = disabledNext;
-                $scope.disabledLast = disabledLast;
-            }
 
             $http.get($scope.countAllApiUrl )
                 .success(function(data) {
@@ -58,6 +52,7 @@ myDirectiveModule.directive('myPaginationDirective', function() {
                             }
                         }
                     }
+                    /*
                     console.log( "-myGlobalDataService.pageInfo.totalMsgCnt =" + myGlobalDataService.pageInfo.totalMsgCnt  );//debug
                     console.log( "-myGlobalDataService.pageInfo.currentPage =" + myGlobalDataService.pageInfo.currentPage  );//debug
                     console.log( "-myGlobalDataService.pageInfo.maxVisiblePages =" + myGlobalDataService.pageInfo.maxVisiblePages  );//debug
@@ -65,6 +60,9 @@ myDirectiveModule.directive('myPaginationDirective', function() {
                     console.log( "-myGlobalDataService.pageInfo.totalPages =" +myGlobalDataService.pageInfo.totalPages);//debug
                     console.log( "-myGlobalDataService.pageInfo.totalPageSets: " + myGlobalDataService.pageInfo.totalPageSets );
                     console.log( "-myGlobalDataService.pageInfo.currentPageSet: " + myGlobalDataService.pageInfo.currentPageSet );
+                    */
+                    $scope.disabledNext = 0;
+                    $scope.disabledLast = 0;
 
                     if(myGlobalDataService.pageInfo.currentPageSet == 1 ) {
                         $scope.disabledFirst = 1;
@@ -105,9 +103,6 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             $scope.showFirstPageSet = function(){
                 myGlobalDataService.pageInfo.currentPageSet = 1;
                 //console.log( "showFirstPageSet!!");//debug
-                setDisabledFirstPreviousNextLastPageButton(1,1,0,0);
-
-                //console.log( "showFirstPageSet --> move to 1 page");//debug
                 myGlobalDataService.pageInfo.currentPage=1;
                 $location.path( $scope.pagedListApiUrlPrefix + myGlobalDataService.pageInfo.currentPage);
             };
@@ -116,19 +111,12 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             $scope.showPreviousPageSet = function(){
 
                 if(myGlobalDataService.pageInfo.currentPageSet == 1 ) {
-                    console.log( "showPreviousPageSet --> SKIP!!");//debug
+                    //console.log( "showPreviousPageSet --> SKIP!!");//debug
                     return; //skip
                 }
 
                 myGlobalDataService.pageInfo.currentPageSet -= 1;
 
-                //console.log( "showPreviousPageSet : myGlobalDataService.pageInfo.currentPageSet="+myGlobalDataService.pageInfo.currentPageSet);//debug
-                if(myGlobalDataService.pageInfo.currentPageSet == 1 ) {
-                    //console.log( "showPreviousPageSet --> First!!");//debug
-                    setDisabledFirstPreviousNextLastPageButton(1,1,0,0);
-                }
-
-                //이전 페이지 set으로 표시되었을때 선택 상태로 표시될 페이지를 지정
                 activatePageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + myGlobalDataService.pageInfo.maxVisiblePages;
                 //console.log( "showPreviousPageSet --> activatePageIndex:"+activatePageIndex+" pageInfo.maxVisiblePages:"+myGlobalDataService.pageInfo.maxVisiblePages);//debug
                 myGlobalDataService.pageInfo.currentPage=activatePageIndex;
@@ -139,17 +127,11 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             $scope.showNextPageSet = function(){
 
                 if(myGlobalDataService.pageInfo.currentPageSet == myGlobalDataService.pageInfo.totalPageSets ) {
-                    console.log( "showNextPageSet --> SKIP!!:"+myGlobalDataService.pageInfo.currentPageSet);//debug
+                    //console.log( "showNextPageSet --> SKIP!!:"+myGlobalDataService.pageInfo.currentPageSet);//debug
                     return; //skip
                 }
 
                 myGlobalDataService.pageInfo.currentPageSet += 1;
-                //console.log( "showNextPageSet : myGlobalDataService.pageInfo.currentPageSet="+myGlobalDataService.pageInfo.currentPageSet);//debug
-
-                if(myGlobalDataService.pageInfo.currentPageSet == myGlobalDataService.pageInfo.totalPageSets ) {
-                    //console.log( "showNextPageSet --> last!!");//debug
-                    setDisabledFirstPreviousNextLastPageButton(0,0,1,1);
-                }
 
                 //다음 페이지셋의 첫번쩨 페이지로 이동 (ex: 1,2,3,4 페이지셋 표시중 다음을 누른 경우 5번째 패이지 표시)
                 nextFirstPageIndex=(myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + 1;
@@ -162,12 +144,10 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             $scope.showLastPageSet = function(){
                 //console.log( "showLastPageSet!!");//debug
                 myGlobalDataService.pageInfo.currentPageSet = myGlobalDataService.pageInfo.totalPageSets;
-                setDisabledFirstPreviousNextLastPageButton(0,0,1,1);
 
                 myGlobalDataService.pageInfo.currentPage=myGlobalDataService.pageInfo.totalPages;
                 $location.path( $scope.pagedListApiUrlPrefix +myGlobalDataService.pageInfo.currentPage );
             };
         }
-        //---------------------------------------------------------------------
     };
 });
