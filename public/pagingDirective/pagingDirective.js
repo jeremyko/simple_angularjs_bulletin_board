@@ -119,17 +119,15 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
                     var nIndexStart = ((myGlobalDataService.pageInfo.currentPage-1) * myGlobalDataService.pageInfo.listPerPage)+1 ;
                     //console.log( "nIndexStart ="+nIndexStart ); //debug
                     var listIndexAry=[];
-                    //var i;
                     for (i = 0; i < myGlobalDataService.pageInfo.listPerPage; i++) {
                         listIndexAry.push ( nIndexStart+i );
                         //console.log( "push :"+(nIndexStart+i) ); //debug
                     }
                     angular.copy(listIndexAry, myGlobalDataService.pageInfo.listIndexAry);
-
                 })
                 .error (function () {
-                console.log( "count all Error!: "  );
-            });
+                    console.log( "count all Error!: "  );
+                });
         };
 
         //----------------------------------
