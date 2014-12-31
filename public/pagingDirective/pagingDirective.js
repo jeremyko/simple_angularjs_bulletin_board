@@ -23,8 +23,9 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             pagedListApiUrlPrefix:'@'
         },
 
-        //TODO : myGlobalDataService 의 종속성을 제거할 방법은??
-        controller: function($scope,$http,$location,myGlobalDataService){
+
+        //XXX : 이 컨트롤러의 부모는 listCtrl 이다!!
+        controller: function($scope, $http, $location, myGlobalDataService){
             //console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
             //    " $scope.countAllApiUrl="+$scope.countAllApiUrl+
             //    " $scope.pagedListApiUrlPrefix="+$scope.pagedListApiUrlPrefix); //debug
@@ -33,7 +34,6 @@ myDirectiveModule.directive('myPaginationDirective', function() {
 
             $http.get($scope.countAllApiUrl )
                 .success(function(data) {
-
                     console.log( "-myPaginationDirective totalCount: " + data );
                     myGlobalDataService.pageInfo.totalMsgCnt = data; //save to service
                     myGlobalDataService.pageInfo.totalPages = Math.ceil(myGlobalDataService.pageInfo.totalMsgCnt / myGlobalDataService.pageInfo.listPerPage);
@@ -154,6 +154,11 @@ myDirectiveModule.directive('myPaginationDirective', function() {
 
                 myGlobalDataService.pageInfo.currentPage=myGlobalDataService.pageInfo.totalPages;
                 $location.path( $scope.pagedListApiUrlPrefix +myGlobalDataService.pageInfo.currentPage );
+            };
+
+            $scope.pageChanged = function(page) {
+                console.log("directive: page changed!!!! ->", page); //debug
+                //TODO : get data from server and change list
             };
         }
     };

@@ -33,7 +33,7 @@ myControllerModule.controller('listCtrl',
                 //console.log( "push :"+(nIndexStart+i) ); //debug
             }
 
-            //--------------------------------------------------------------------
+            //-------------------------------------------------------------------- invoke http
             myHttpService.getPagedList($routeParams.page, myGlobalDataService.pageInfo.listPerPage).success(function(data) {
                 $scope.guestMsgs = data;
             });

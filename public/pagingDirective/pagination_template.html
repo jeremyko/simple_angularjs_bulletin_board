@@ -3,7 +3,7 @@
     <li ng-class="{disabled: disabledFirst}"><a href="" ng-click="showFirstPageSet()">First</a></li>
     <li ng-class="{disabled: disabledPrevious}"><a href="" ng-click="showPreviousPageSet()">Previous</a></li>
     <li ng-repeat="page in pageSetArray" ng-class="{active: activeIndexAry[ $index ], disabled: disabledIndexAry[ $index ]}">
-        <a href="#{{pagedListApiUrlPrefix}}{{page}}">{{page}}</a>
+        <a href="#{{pagedListApiUrlPrefix}}{{page}}" ng-click="pageChanged(page)">{{page}}</a>
     </li>
     <li ng-class="{disabled: disabledNext}"><a href="" ng-click="showNextPageSet()">Next</a></li>
     <li ng-class="{disabled: disabledLast}"><a href="" ng-click="showLastPageSet()">Last</a></li>
