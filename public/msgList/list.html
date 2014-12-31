@@ -32,34 +32,45 @@
         </tr>
        </tbody>
     </table>
+
+
+
+
 </div>
 
-        <!--
 <div class="pull-left">
-    <br/>
     <table>
         <tr>
             <td>
-                <pagination boundary-links="true"
-                            max-size="10"
-                            items-per-page="itemsPerPage"
-                            total-items="dustDatas.length"
-                            ng-model="currentPage"
-                            ng-change="pageChanged()"></pagination>
+                <my-pagination-directive max-visible-pages="5"
+                                         count-all-api-url="apis/countAll"
+                                         list-per-page="5">
+                </my-pagination-directive>
             </td>
         </tr>
     </table>
 </div>
--->
 
+<div class="pull-right">
+    <table>
+        <tr>
+            <td>
+                <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
+                    <span class="glyphicon glyphicon-pencil"></span> Write
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!--
 <div class="pull-left">
 <table>
     <tr>
         <td>
             <my-pagination-directive max-visible-pages="5"
-                                     count-all-api-url="apis/countAll"
-                                     paged-list-api-url-prefix="/list/"
-                                      ></my-pagination-directive>
+                                     count-all-api-url="apis/countAll">
+            </my-pagination-directive>
         </td>
     </tr>
 </table>
@@ -68,23 +79,7 @@
 <div class="pull-right">
 <table>
     <tr>
-        <!--
-        <td>
-            <select name="search_option" class="form-control input-sm auto" >
-                <option value="opt_title">title</option>
-                <option value="opt_content">contents</option>
-                <option value="opt_title_or_content">title+contents</option>
-                <option value="opt_user">user</option>
-            </select>
-        </td>
-        <td>
-            <input type="text" class="form-control" style="margin: 0;" placeholder="Search">
-        </td>
-        <td>
-            <button class="btn btn-info btn-sm" style="margin: 0;" ng-click="GoToUrl('/search')">
-                <span class="glyphicon glyphicon-search"></span> Search
-            </button>
-        </td>-->
+
         <td>
             <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
                 <span class="glyphicon glyphicon-pencil"></span> Write
@@ -93,6 +88,7 @@
     </tr>
 </table>
 </div>
+-->
 
 
 

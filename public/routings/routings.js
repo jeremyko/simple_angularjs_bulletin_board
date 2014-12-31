@@ -10,10 +10,13 @@ angular.module('myRoutingModule', ['ngRoute'])
     .config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.
-                when('/list/:page', {
+
+                when('/list', {
+                //when('/list/:page', {
                     templateUrl: 'msgList/list.html',
                     controller: 'listCtrl'
                 }).
+
                 when('/view/:msgObjId', {
                     templateUrl: 'msgView/view.html',
                     controller: 'viewCtrl'
@@ -27,6 +30,6 @@ angular.module('myRoutingModule', ['ngRoute'])
                     controller: 'editCtrl'
                 }).
                 otherwise({
-                    redirectTo: '/list/1'
+                    redirectTo: '/list/'
                 });
         }]);

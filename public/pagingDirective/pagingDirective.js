@@ -1,165 +1,255 @@
 /**
  * Created by kojunghyun on 14. 12. 31..
  */
-/**
- * Created by kojunghyun on 14. 12. 6..
- */
+
 'use strict';
 
 var myDirectiveModule = angular.module('myDirectiveModule', ['myServiceModule']);
 
 //-----------------------------------------------------------------------------
-//directive : for pagination
-myDirectiveModule.directive('myPaginationDirective', function() {
+myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$attrs', '$parse','$http', 'myHttpService', 'myGlobalDataService',
+    function ($scope, $location, $attrs, $parse,  $http, myHttpService, myGlobalDataService) {
+        var pageInfo = myGlobalDataService.pageInfo;
+        //1 번만 로딩된다. list.js를 통해 이미 1 page 데이터는 가져온 상태이다(최초 기동시 1page).
+        //console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
+        //    " $scope.countAllApiUrl="+$scope.countAllApiUrl ); //debug
+        //console.log("$scope.testStr-->",$scope.testStr);//TEST!!
 
+        pageInfo.maxVisiblePages = parseInt( $scope.maxVisiblePages);
 
-    return {
-        restrict: 'E',
-        templateUrl: 'pagingDirective/pagination_template.html',
+        //TEST!!!------------
+        /*
+        if ($attrs.listPerPage) {
+            //isolate scope
+            $scope.$parent.$watch($parse($attrs.listPerPage), function(value) {
+                console.log("$attrs.listPerPage-->",parseInt(value, 10) );
+            });
+        } else {
+        }
+        */
 
-        scope: {
-            maxVisiblePages: '@',
-            countAllApiUrl:'@',
-            pagedListApiUrlPrefix:'@'
-        },
+        //pageInfo.listPerPage = $scope.listPerPage;
+        //console.log("myPaginationController-->",$scope.listPerPage);//TEST!!
 
-
-        //XXX : 이 컨트롤러의 부모는 listCtrl 이다!!
-        controller: function($scope, $http, $location, myGlobalDataService){
-            //console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
-            //    " $scope.countAllApiUrl="+$scope.countAllApiUrl+
-            //    " $scope.pagedListApiUrlPrefix="+$scope.pagedListApiUrlPrefix); //debug
-
-            myGlobalDataService.pageInfo.maxVisiblePages = parseInt( $scope.maxVisiblePages);
-
+        //----------------------------------
+        //페이지별로 서버에 요청할 때 마다 호출 된다. 전체 건수는 별도로 요청해서 알아내야함.
+        //최신 데이터 갯수를 바탕으로 페이징을 계산하기 위함.
+        //XXX : myGlobalDataService 종속성 !!!
+        $scope.getCountAll = function() {
             $http.get($scope.countAllApiUrl )
-                .success(function(data) {
-                    console.log( "-myPaginationDirective totalCount: " + data );
-                    myGlobalDataService.pageInfo.totalMsgCnt = data; //save to service
-                    myGlobalDataService.pageInfo.totalPages = Math.ceil(myGlobalDataService.pageInfo.totalMsgCnt / myGlobalDataService.pageInfo.listPerPage);
-                    myGlobalDataService.pageInfo.totalPageSets = Math.ceil(myGlobalDataService.pageInfo.totalPages / myGlobalDataService.pageInfo.maxVisiblePages);
+                .success(function(totalCount) {
+                    var i = 0;
+                    //console.log( "-myPaginationDirective totalCount: " + totalCount ); //debug
+                    pageInfo.totalMsgCnt = totalCount; //save to service
+                    pageInfo.totalPages = Math.ceil(pageInfo.totalMsgCnt / pageInfo.listPerPage);
+                    pageInfo.totalPageSets = Math.ceil(pageInfo.totalPages / pageInfo.maxVisiblePages);
 
-                    $scope.totalPages = myGlobalDataService.pageInfo.totalPages ;
-                    $scope.currentPage = myGlobalDataService.pageInfo.currentPage;
-                    $scope.totalPages = myGlobalDataService.pageInfo.totalPages ;
+                    $scope.totalPages = pageInfo.totalPages ;
+                    $scope.currentPage = pageInfo.currentPage;
+                    $scope.totalPages = pageInfo.totalPages ;
 
-                    if(myGlobalDataService.pageInfo.currentPageSet<0){
-                        //최초 상태 : myGlobalDataService.pageInfo.currentPage 를 이용해서 currentPageSet 를 계산.
+                    if(pageInfo.currentPageSet<0){
+                        //최초 상태 : pageInfo.currentPage 를 이용해서 currentPageSet 를 계산.
                         //사용자가 페이지 버튼을 조작하면 음수 아닌 값이 설정될것이다.
                         console.log( "----- currentPageSet is not set! " ); //debug
-                        var i;
-                        for (i = 1; i <= myGlobalDataService.pageInfo.totalPageSets; i++) {
-                            var endPageInVisiblePages = myGlobalDataService.pageInfo.maxVisiblePages * i;
+
+                        for ( i = 1; i <= pageInfo.totalPageSets; i++) {
+                            var endPageInVisiblePages = pageInfo.maxVisiblePages * i;
                             //console.log( "----- endPageInVisiblePages :"+endPageInVisiblePages ); //debug
-                            if( myGlobalDataService.pageInfo.currentPage <= endPageInVisiblePages) {
-                                myGlobalDataService.pageInfo.currentPageSet = i;
+                            if( pageInfo.currentPage <= endPageInVisiblePages) {
+                                pageInfo.currentPageSet = i;
                                 console.log( "----- set currentPageSet :"+i ); //debug
                                 break;
                             }
                         }
                     }
-                    /*
-                     console.log( "-myGlobalDataService.pageInfo.totalMsgCnt =" + myGlobalDataService.pageInfo.totalMsgCnt  );//debug
-                     console.log( "-myGlobalDataService.pageInfo.currentPage =" + myGlobalDataService.pageInfo.currentPage  );//debug
-                     console.log( "-myGlobalDataService.pageInfo.maxVisiblePages =" + myGlobalDataService.pageInfo.maxVisiblePages  );//debug
-                     console.log( "-myGlobalDataService.pageInfo.listPerPage =" +myGlobalDataService.pageInfo.listPerPage);//debug
-                     console.log( "-myGlobalDataService.pageInfo.totalPages =" +myGlobalDataService.pageInfo.totalPages);//debug
-                     console.log( "-myGlobalDataService.pageInfo.totalPageSets: " + myGlobalDataService.pageInfo.totalPageSets );
-                     console.log( "-myGlobalDataService.pageInfo.currentPageSet: " + myGlobalDataService.pageInfo.currentPageSet );
-                     */
+
                     $scope.disabledNext = 0;
                     $scope.disabledLast = 0;
 
-                    if(myGlobalDataService.pageInfo.currentPageSet == 1 ) {
+                    /*
+                    if(pageInfo.currentPageSet == 1 ) {
                         $scope.disabledFirst = 1;
                         $scope.disabledPrevious = 1;
                     }
 
-                    if(myGlobalDataService.pageInfo.currentPageSet > 1 ) {
+                    if(pageInfo.currentPageSet > 1 ) {
+                        $scope.disabledFirst = 0;
+                        $scope.disabledPrevious = 0;
+                    }
+                     if(pageInfo.currentPageSet == pageInfo.totalPageSets ) {
+                     $scope.disabledNext = 1;
+                     $scope.disabledLast = 1;
+                     }
+                    */
+                    if(pageInfo.currentPage == 1 ) {
+                        $scope.disabledFirst = 1;
+                        $scope.disabledPrevious = 1;
+                    }
+
+                    if(pageInfo.currentPage > 1 ) {
                         $scope.disabledFirst = 0;
                         $scope.disabledPrevious = 0;
                     }
 
-                    if(myGlobalDataService.pageInfo.currentPageSet == myGlobalDataService.pageInfo.totalPageSets ) {
+                    if(pageInfo.currentPage == pageInfo.totalPages ) {
                         $scope.disabledNext = 1;
                         $scope.disabledLast = 1;
                     }
 
                     $scope.pageSetArray=[];
                     $scope.activeIndexAry=[];
-                    var i;
-                    for (i = 0; i < myGlobalDataService.pageInfo.maxVisiblePages; i++) {
-                        var pageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + (i + 1);
 
-                        if(pageIndex <= myGlobalDataService.pageInfo.totalPages ) {
+                    for (i = 0; i < pageInfo.maxVisiblePages; i++) {
+                        var pageIndex = (pageInfo.maxVisiblePages*(pageInfo.currentPageSet-1)) + (i + 1);
+
+                        if(pageIndex <= pageInfo.totalPages ) {
                             $scope.pageSetArray.push(pageIndex);
-                            if(myGlobalDataService.pageInfo.currentPage ==pageIndex){
+                            if(pageInfo.currentPage ==pageIndex){
                                 $scope.activeIndexAry.push(1); //set active page
                             }else{
                                 $scope.activeIndexAry.push(0);
                             }
                         }
                     }
+
+
+                    //--------------------------------------------------------------------
+                    //각 페이지에 표시될 게시물 순번을 생성한다.
+                    var nIndexStart = ((myGlobalDataService.pageInfo.currentPage-1) * myGlobalDataService.pageInfo.listPerPage)+1 ;
+                    //console.log( "nIndexStart ="+nIndexStart ); //debug
+                    var listIndexAry=[];
+                    //var i;
+                    for (i = 0; i < myGlobalDataService.pageInfo.listPerPage; i++) {
+                        listIndexAry.push ( nIndexStart+i );
+                        //console.log( "push :"+(nIndexStart+i) ); //debug
+                    }
+                    angular.copy(listIndexAry, myGlobalDataService.pageInfo.listIndexAry);
+
                 })
                 .error (function () {
                 console.log( "count all Error!: "  );
             });
+        };
+
+        //----------------------------------
+        $scope.getCountAll();
 
 
-            //--------------------------------------------------------------
-            $scope.showFirstPageSet = function(){
-                myGlobalDataService.pageInfo.currentPageSet = 1;
-                //console.log( "showFirstPageSet!!");//debug
-                myGlobalDataService.pageInfo.currentPage=1;
-                $location.path( $scope.pagedListApiUrlPrefix + myGlobalDataService.pageInfo.currentPage);
-            };
+        //--------------------------------------------------------------
+        $scope.moveToFirstPage = function(){
+            pageInfo.currentPageSet = 1;
+            pageInfo.currentPage=1;
+            $scope.pageChanged(pageInfo.currentPage);
+        };
 
-            //--------------------------------------------------------------
-            $scope.showPreviousPageSet = function(){
+        //--------------------------------------------------------------
+        $scope.moveToPreviousPageSet = function() {
 
-                if(myGlobalDataService.pageInfo.currentPageSet == 1 ) {
-                    //console.log( "showPreviousPageSet --> SKIP!!");//debug
+            if(pageInfo.currentPageSet == 1 ) {
+                //console.log( "showPreviousPageSet --> SKIP!!");//debug
+                return; //skip
+            }
+            pageInfo.currentPageSet -= 1;
+
+            var activatePageIndex = (pageInfo.maxVisiblePages*(pageInfo.currentPageSet-1)) + pageInfo.maxVisiblePages;
+            //console.log( "showPreviousPageSet --> activatePageIndex:"+activatePageIndex+" pageInfo.maxVisiblePages:"+pageInfo.maxVisiblePages);//debug
+            pageInfo.currentPage=activatePageIndex;
+        };
+        //--------------------------------------------------------------
+        $scope.moveToNextPageSet = function(){
+
+            if(pageInfo.currentPageSet == pageInfo.totalPageSets ) {
+                //console.log( "showNextPageSet --> SKIP!!:"+pageInfo.currentPageSet);//debug
+                return; //skip
+            }
+            pageInfo.currentPageSet += 1;
+
+            //다음 페이지셋의 첫번쩨 페이지로 이동 (ex: 1,2,3,4 페이지셋 표시중 다음을 누른 경우 5번째 패이지 표시)
+            var nextFirstPageIndex=(pageInfo.maxVisiblePages*(pageInfo.currentPageSet-1)) + 1;
+            pageInfo.currentPage=nextFirstPageIndex;
+            $scope.pageChanged(pageInfo.currentPage);
+        };
+
+        //--------------------------------------------------------------
+        $scope.moveToPreviousPage = function(){
+
+            if(pageInfo.currentPage == 1 ) {
+                return; //skip
+            }
+            pageInfo.currentPage -= 1;
+
+            //check pageSet
+            //pageInfo.currentPageSet 에서 -1 변경된 페이지의 인덱스가 0보다 작으면 pageSet을 감소 시킨다.
+            var checkPage = pageInfo.currentPage % pageInfo.listPerPage ;
+            if(checkPage==0){
+                if(pageInfo.currentPageSet == 1 ) {
                     return; //skip
                 }
+                pageInfo.currentPageSet -= 1;
+                //console.log("decrease pageSet:",pageInfo.currentPageSet );
+            }
+            $scope.pageChanged(pageInfo.currentPage);
+        };
 
-                myGlobalDataService.pageInfo.currentPageSet -= 1;
+        //--------------------------------------------------------------
+        $scope.moveToNextPage = function(){
 
-                var activatePageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + myGlobalDataService.pageInfo.maxVisiblePages;
-                //console.log( "showPreviousPageSet --> activatePageIndex:"+activatePageIndex+" pageInfo.maxVisiblePages:"+myGlobalDataService.pageInfo.maxVisiblePages);//debug
-                myGlobalDataService.pageInfo.currentPage=activatePageIndex;
-                $location.path( $scope.pagedListApiUrlPrefix + myGlobalDataService.pageInfo.currentPage);
-            };
+            if(pageInfo.currentPage == pageInfo.totalPages ) {
+                //console.log( "showNextPageSet --> SKIP!!:"+pageInfo.currentPageSet);//debug
+                return; //skip
+            }
+            pageInfo.currentPage += 1;
 
-            //--------------------------------------------------------------
-            $scope.showNextPageSet = function(){
-
-                if(myGlobalDataService.pageInfo.currentPageSet == myGlobalDataService.pageInfo.totalPageSets ) {
-                    //console.log( "showNextPageSet --> SKIP!!:"+myGlobalDataService.pageInfo.currentPageSet);//debug
+            //check pageSet
+            //pageInfo.currentPageSet 에서 +1 변경된 페이지의 인덱스가 현재 페이지set을 넘어가면 pageSet을 +1 시킨다.
+            var checkPageSet = pageInfo.currentPageSet * pageInfo.listPerPage ;
+            if( pageInfo.currentPage > checkPageSet ){
+                if(pageInfo.currentPageSet == pageInfo.totalPageSets ) {
                     return; //skip
                 }
+                pageInfo.currentPageSet += 1;
+            }
 
-                myGlobalDataService.pageInfo.currentPageSet += 1;
+            $scope.pageChanged(pageInfo.currentPage);
+        };
 
-                //다음 페이지셋의 첫번쩨 페이지로 이동 (ex: 1,2,3,4 페이지셋 표시중 다음을 누른 경우 5번째 패이지 표시)
-                var nextFirstPageIndex=(myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + 1;
-                //console.log( "showNextPageSet --> move to page:"+nextFirstPageIndex);//debug
-                myGlobalDataService.pageInfo.currentPage=nextFirstPageIndex;
-                $location.path( $scope.pagedListApiUrlPrefix +myGlobalDataService.pageInfo.currentPage );
-            };
+        //--------------------------------------------------------------
+        $scope.moveToLastPage = function(){
+            pageInfo.currentPageSet = pageInfo.totalPageSets;
+            pageInfo.currentPage=pageInfo.totalPages;
+            $scope.pageChanged(pageInfo.currentPage);
+        };
 
-            //--------------------------------------------------------------
-            $scope.showLastPageSet = function(){
-                //console.log( "showLastPageSet!!");//debug
-                myGlobalDataService.pageInfo.currentPageSet = myGlobalDataService.pageInfo.totalPageSets;
+        //--------------------------------------------------------------
+        $scope.pageChanged = function(page) {
+            //console.log("directive: page changed!!!! ->", page); //debug
+            pageInfo.currentPage = page;
 
-                myGlobalDataService.pageInfo.currentPage=myGlobalDataService.pageInfo.totalPages;
-                $location.path( $scope.pagedListApiUrlPrefix +myGlobalDataService.pageInfo.currentPage );
-            };
+            $scope.getCountAll();
+            myHttpService.getPagedList(page, pageInfo.listPerPage);
+        };
+}]);
 
-            $scope.pageChanged = function(page) {
-                console.log("directive: page changed!!!! ->", page); //debug
-                //TODO : get data from server and change list
-            };
-        }
+
+//directive : for pagination : 페이지별로 서버에 요청
+myDirectiveModule.directive('myPaginationDirective', function() {
+
+    return {
+        restrict: 'E',
+        templateUrl: 'pagingDirective/pagination_template.html',
+
+
+        scope: {
+            maxVisiblePages: '@',
+            countAllApiUrl:'@'
+            //listPerPage:'@'
+        },
+
+        //scope:false,
+
+        controller: 'myPaginationController'
+
+
     };
 });
