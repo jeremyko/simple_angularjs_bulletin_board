@@ -34,6 +34,23 @@
     </table>
 </div>
 
+        <!--
+<div class="pull-left">
+    <br/>
+    <table>
+        <tr>
+            <td>
+                <pagination boundary-links="true"
+                            max-size="10"
+                            items-per-page="itemsPerPage"
+                            total-items="dustDatas.length"
+                            ng-model="currentPage"
+                            ng-change="pageChanged()"></pagination>
+            </td>
+        </tr>
+    </table>
+</div>
+-->
 
 <div class="pull-left">
 <table>
@@ -41,7 +58,9 @@
         <td>
             <my-pagination-directive max-visible-pages="5"
                                      count-all-api-url="apis/countAll"
-                                     paged-list-api-url-prefix="/list/"></my-pagination-directive>
+                                     paged-list-api-url-prefix="/list/"
+                                     ng-model="currentPage"
+                                     ng-change="pageChanged()" ></my-pagination-directive>
         </td>
     </tr>
 </table>

@@ -1,4 +1,7 @@
 /**
+ * Created by kojunghyun on 14. 12. 31..
+ */
+/**
  * Created by kojunghyun on 14. 12. 4..
  */
 
@@ -26,8 +29,8 @@ myServiceModule.factory('myGlobalDataService', function(){
             currentPage: 1,    //사용자가 선택한 페이지를 계속 저장
             totalPageSets:-1,
             currentPageSet: -1 // ex: 전체 100 페이지 존재하는데(totalPages), 표시 페이지 단위가 5이면(maxVisiblePages),
-                               // 총 20 page sets (totalPageSets) 이 생성된다.
-                               // 이 page sets 들에서 현재 표시되고 있는 화면의 page set 을 의미함.
+            // 총 20 page sets (totalPageSets) 이 생성된다.
+            // 이 page sets 들에서 현재 표시되고 있는 화면의 page set 을 의미함.
         }
     };
 });
@@ -39,10 +42,10 @@ myServiceModule.factory('myHttpService', function($http){
 
     return {
         /*
-        count: function() {
-            return $http.get('apis/countAll');
-        },
-        */
+         count: function() {
+         return $http.get('apis/countAll');
+         },
+         */
         getPagedList : function(page, listPerPage) {
             return $http.get('/apis/list/'+page+'/'+listPerPage);
         },

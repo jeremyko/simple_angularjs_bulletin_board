@@ -1,15 +1,21 @@
 /**
+ * Created by kojunghyun on 14. 12. 31..
+ */
+/**
  * Created by kojunghyun on 14. 12. 6..
  */
+'use strict';
+
 var myDirectiveModule = angular.module('myDirectiveModule', ['myServiceModule']);
 
 //-----------------------------------------------------------------------------
 //directive : for pagination
 myDirectiveModule.directive('myPaginationDirective', function() {
 
+
     return {
         restrict: 'E',
-        templateUrl: '../partials/pagination_template.html',
+        templateUrl: 'pagingDirective/pagination_template.html',
 
         scope: {
             maxVisiblePages: '@',
@@ -19,9 +25,9 @@ myDirectiveModule.directive('myPaginationDirective', function() {
 
         //TODO : myGlobalDataService 의 종속성을 제거할 방법은??
         controller: function($scope,$http,$location,myGlobalDataService){
-            console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
-                " $scope.countAllApiUrl="+$scope.countAllApiUrl+
-                " $scope.pagedListApiUrlPrefix="+$scope.pagedListApiUrlPrefix); //debug
+            //console.log("myPaginationDirective controller maxVisiblePages="+$scope.maxVisiblePages+
+            //    " $scope.countAllApiUrl="+$scope.countAllApiUrl+
+            //    " $scope.pagedListApiUrlPrefix="+$scope.pagedListApiUrlPrefix); //debug
 
             myGlobalDataService.pageInfo.maxVisiblePages = parseInt( $scope.maxVisiblePages);
 
@@ -41,7 +47,7 @@ myDirectiveModule.directive('myPaginationDirective', function() {
                         //최초 상태 : myGlobalDataService.pageInfo.currentPage 를 이용해서 currentPageSet 를 계산.
                         //사용자가 페이지 버튼을 조작하면 음수 아닌 값이 설정될것이다.
                         console.log( "----- currentPageSet is not set! " ); //debug
-
+                        var i;
                         for (i = 1; i <= myGlobalDataService.pageInfo.totalPageSets; i++) {
                             var endPageInVisiblePages = myGlobalDataService.pageInfo.maxVisiblePages * i;
                             //console.log( "----- endPageInVisiblePages :"+endPageInVisiblePages ); //debug
@@ -53,14 +59,14 @@ myDirectiveModule.directive('myPaginationDirective', function() {
                         }
                     }
                     /*
-                    console.log( "-myGlobalDataService.pageInfo.totalMsgCnt =" + myGlobalDataService.pageInfo.totalMsgCnt  );//debug
-                    console.log( "-myGlobalDataService.pageInfo.currentPage =" + myGlobalDataService.pageInfo.currentPage  );//debug
-                    console.log( "-myGlobalDataService.pageInfo.maxVisiblePages =" + myGlobalDataService.pageInfo.maxVisiblePages  );//debug
-                    console.log( "-myGlobalDataService.pageInfo.listPerPage =" +myGlobalDataService.pageInfo.listPerPage);//debug
-                    console.log( "-myGlobalDataService.pageInfo.totalPages =" +myGlobalDataService.pageInfo.totalPages);//debug
-                    console.log( "-myGlobalDataService.pageInfo.totalPageSets: " + myGlobalDataService.pageInfo.totalPageSets );
-                    console.log( "-myGlobalDataService.pageInfo.currentPageSet: " + myGlobalDataService.pageInfo.currentPageSet );
-                    */
+                     console.log( "-myGlobalDataService.pageInfo.totalMsgCnt =" + myGlobalDataService.pageInfo.totalMsgCnt  );//debug
+                     console.log( "-myGlobalDataService.pageInfo.currentPage =" + myGlobalDataService.pageInfo.currentPage  );//debug
+                     console.log( "-myGlobalDataService.pageInfo.maxVisiblePages =" + myGlobalDataService.pageInfo.maxVisiblePages  );//debug
+                     console.log( "-myGlobalDataService.pageInfo.listPerPage =" +myGlobalDataService.pageInfo.listPerPage);//debug
+                     console.log( "-myGlobalDataService.pageInfo.totalPages =" +myGlobalDataService.pageInfo.totalPages);//debug
+                     console.log( "-myGlobalDataService.pageInfo.totalPageSets: " + myGlobalDataService.pageInfo.totalPageSets );
+                     console.log( "-myGlobalDataService.pageInfo.currentPageSet: " + myGlobalDataService.pageInfo.currentPageSet );
+                     */
                     $scope.disabledNext = 0;
                     $scope.disabledLast = 0;
 
@@ -81,8 +87,9 @@ myDirectiveModule.directive('myPaginationDirective', function() {
 
                     $scope.pageSetArray=[];
                     $scope.activeIndexAry=[];
+                    var i;
                     for (i = 0; i < myGlobalDataService.pageInfo.maxVisiblePages; i++) {
-                        pageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + (i + 1);
+                        var pageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + (i + 1);
 
                         if(pageIndex <= myGlobalDataService.pageInfo.totalPages ) {
                             $scope.pageSetArray.push(pageIndex);
@@ -117,7 +124,7 @@ myDirectiveModule.directive('myPaginationDirective', function() {
 
                 myGlobalDataService.pageInfo.currentPageSet -= 1;
 
-                activatePageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + myGlobalDataService.pageInfo.maxVisiblePages;
+                var activatePageIndex = (myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + myGlobalDataService.pageInfo.maxVisiblePages;
                 //console.log( "showPreviousPageSet --> activatePageIndex:"+activatePageIndex+" pageInfo.maxVisiblePages:"+myGlobalDataService.pageInfo.maxVisiblePages);//debug
                 myGlobalDataService.pageInfo.currentPage=activatePageIndex;
                 $location.path( $scope.pagedListApiUrlPrefix + myGlobalDataService.pageInfo.currentPage);
@@ -134,7 +141,7 @@ myDirectiveModule.directive('myPaginationDirective', function() {
                 myGlobalDataService.pageInfo.currentPageSet += 1;
 
                 //다음 페이지셋의 첫번쩨 페이지로 이동 (ex: 1,2,3,4 페이지셋 표시중 다음을 누른 경우 5번째 패이지 표시)
-                nextFirstPageIndex=(myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + 1;
+                var nextFirstPageIndex=(myGlobalDataService.pageInfo.maxVisiblePages*(myGlobalDataService.pageInfo.currentPageSet-1)) + 1;
                 //console.log( "showNextPageSet --> move to page:"+nextFirstPageIndex);//debug
                 myGlobalDataService.pageInfo.currentPage=nextFirstPageIndex;
                 $location.path( $scope.pagedListApiUrlPrefix +myGlobalDataService.pageInfo.currentPage );
