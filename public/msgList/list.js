@@ -22,6 +22,10 @@ myControllerModule.controller('listCtrl',
                 $location.path( '/list' );
             };
 
+            $rootScope.GoToUrl = function (url) {
+                $location.path(url);
+            };
+
             $scope.listIndexAry=myGlobalDataService.pageInfo.listIndexAry;
 
             //console.log( "listCtrl  :myHttpService.getPagedList!!" ); //debug
