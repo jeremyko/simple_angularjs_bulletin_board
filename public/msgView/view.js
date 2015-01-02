@@ -20,6 +20,7 @@ myControllerModule.controller('viewCtrl', ['$scope', '$routeParams','$location',
 
         //$scope.currentPage = myGlobalDataService.pageInfo.currentPage;
 
+        //console.log('view: $routeParams.msgObjId=',$routeParams.msgObjId); //debug
         myHttpService.view($routeParams.msgObjId)
             .success(function(data) {
                 $scope.msgObjId = $routeParams.msgObjId;

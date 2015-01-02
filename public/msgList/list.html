@@ -1,7 +1,87 @@
 <!--<div   style="text-align: right;">총게시물 {{totalCount}}건</div>-->
 
+<accordion close-others="oneAtATime">
+
+    <!--
+    <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+        This content is straight in the template.
+    </accordion-group>
+    -->
+
+    <accordion-group ng-repeat="msg in guestMsgs">
+        <accordion-heading>  {{ msg.title }}
+            <div class="pull-right">
+                <span class="badge">{{msg.hits}} hits</span>
+            </div>
+        </accordion-heading>
+
+        <textarea readonly class="form-control" rows="10">{{msg.contents}}</textarea>
+        <br>
+        <div class="pull-left">
+            <button class="btn btn-info btn-sm" ng-click="editMsg(msg._id)">
+                <span class="glyphicon  glyphicon-pencil"></span>  Edit
+            </button>
+
+            <button class="btn btn-danger btn-sm" ng-click="deleteMsg(msg._id)">
+                <span class="glyphicon glyphicon-remove"></span>  Delete
+            </button>
+        </div>
+
+        <div class="pull-right">
+            <span class="label label-info">{{msg.user}}</span>
+            <span class="label label-info">{{ msg.reg_date }}</span>
+        </div>
+
+    </accordion-group>
+
+    <!--
+    <accordion-group heading>="{{ msg.title }}"  ng-repeat="msg in guestMsgs">
+        <textarea readonly data-role="none" class="form-control" rows="10">{{msg.contents}}</textarea>
+        <br>
+        <div class="pull-left">
+
+
+        <button class="btn btn-info btn-sm" ng-click="editMsg()">
+            <span class="glyphicon  glyphicon-pencil"></span>  Edit
+        </button>
+
+        <button class="btn btn-danger btn-sm" ng-click="deleteMsg()">
+            <span class="glyphicon glyphicon-remove"></span>  Delete
+        </button>
+        </div>
+
+        <div class="pull-right">
+
+        <div style="text-align :right">
+            <span class="label label-info">{{msg.user}}</span>
+            <span class="label label-info">{{ msg.reg_date }}</span>
+            <span class="badge">{{msg.hits}} hits</span>
+        </div>
+            </div>
+    </accordion-group>
+-->
+    <!--
+    <accordion-group heading="Dynamic Body Content">
+        <p>The body of the accordion group grows to fit the contents</p>
+        <button class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
+        <div ng-repeat="item in items">{{item}}</div>
+    </accordion-group>
+
+    <accordion-group is-open="status.open">
+        <accordion-heading>
+            I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+        </accordion-heading>
+        This is just some content to illustrate fancy headings.
+    </accordion-group>
+    -->
+</accordion>
+
 <div class="panel panel-default">
 
+
+
+    <!-- ///////////////////////////////////////////////////// -->
+<!--
     <table class="table table-hover table-condensed" >
         <thead>
         <tr>
@@ -32,9 +112,7 @@
         </tr>
        </tbody>
     </table>
-
-
-
+-->
 
 </div>
 
@@ -63,32 +141,7 @@
     </table>
 </div>
 
-<!--
-<div class="pull-left">
-<table>
-    <tr>
-        <td>
-            <my-pagination-directive max-visible-pages="5"
-                                     count-all-api-url="apis/countAll">
-            </my-pagination-directive>
-        </td>
-    </tr>
-</table>
-</div>
 
-<div class="pull-right">
-<table>
-    <tr>
-
-        <td>
-            <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
-                <span class="glyphicon glyphicon-pencil"></span> Write
-            </button>
-        </td>
-    </tr>
-</table>
-</div>
--->
 
 
 
