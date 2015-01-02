@@ -40,7 +40,7 @@ myControllerModule.controller('listCtrl',
 
             //------------------------------------------------------------
             $scope.editMsg = function (msgObjId) {
-                console.log("delete : id->", msgObjId); //debug
+                console.log("editMsg : id->", msgObjId); //debug
             };
 
             //------------------------------------------------------------
