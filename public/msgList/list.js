@@ -27,6 +27,7 @@ myControllerModule.controller('listCtrl',
             $scope.oneAtATime = true;
             $scope.editing = false;
             $scope.onSearching = false;
+            //$scope.testVar = "yyyyyy";//test
 
             //console.log("listCtrl init!!");//debug
 
@@ -184,7 +185,7 @@ myControllerModule.controller('listCtrl',
                     if(thisIsLastPageAndMsgCnt==0){
                         thisIsLastPageAndMsgCnt = pageInfo.listPerPage;
                     }
-                    console.log('thisIsLastPageAndMsgCnt=',thisIsLastPageAndMsgCnt); //debug
+                    //console.log('thisIsLastPageAndMsgCnt=',thisIsLastPageAndMsgCnt); //debug
                 }
 
                 myHttpService.delete(msgObjId)
@@ -193,8 +194,8 @@ myControllerModule.controller('listCtrl',
                         if(thisIsLastPageAndMsgCnt ==1){
                             pageInfo.currentPage -=1;
                             pageInfo.currentPageSet-=1;
-                            console.log('decrease page !!',pageInfo.currentPage); //debug
-                            console.log('decrease currentPageSet !!',pageInfo.currentPageSet); //debug
+                            //console.log('decrease page !!',pageInfo.currentPage); //debug
+                            //console.log('decrease currentPageSet !!',pageInfo.currentPageSet); //debug
                         }
 
                         myHttpService.getPagedList(pageInfo.currentPage, pageInfo.listPerPage)
@@ -224,13 +225,13 @@ myControllerModule.controller('listCtrl',
                 }
 
                 myGlobalDataService.searchText = $scope.searchText;
-                $scope.onSearching = true;
 
                 myHttpService.getSearchPagedList( 1, pageInfo.listPerPage)
                     .then( function() {
+                        $scope.onSearching = true;
                         pageInfo.currentPage = 1;//XXX TODO 너무 복잡하다!!!
                         pageInfo.currentPageSet = 1;
-                        $rootScope.$broadcast('onSearchingChanged', true);
+                        //$rootScope.$broadcast('onSearchingChanged', true);
                         myHttpService.getSearchResultCount();
                         //reset pageInfo.totalMsgCnt ,pageInfo.totalPages ,pageInfo.totalPageSets
                     });
@@ -239,13 +240,14 @@ myControllerModule.controller('listCtrl',
 
             $scope.cancelSearch = function () {
                 //console.log("cancel search!"); //debug
+                $scope.onSearching = false;
                 pageInfo.currentPage = 1;
                 pageInfo.currentPageSet = 1;
-                $scope.onSearching = false;
                 $scope.searchText="";
 
-                $rootScope.$broadcast('onSearchingChanged', false);
+                //$rootScope.$broadcast('onSearchingChanged', false);
 
+                //모든 게시물 재출력
                 myHttpService.getPagedList(pageInfo.currentPage, pageInfo.listPerPage)
                     .then( function() {
                         myHttpService.getCountAll();//XXX TODO 너무 복잡하다!!!

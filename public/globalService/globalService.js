@@ -74,7 +74,7 @@ myServiceModule.factory('myHttpService', function($rootScope,$http, $log,$q,myGl
                 pageInfo.totalPages = Math.ceil(pageInfo.totalMsgCnt / pageInfo.listPerPage);
                 pageInfo.totalPageSets = Math.ceil(pageInfo.totalPages / pageInfo.maxVisiblePages);
 
-                $rootScope.$broadcast('newCountArrived');
+                $rootScope.$broadcast('newCountArrived');//XXX
                 deferred.resolve();
 
             })
@@ -97,7 +97,7 @@ myServiceModule.factory('myHttpService', function($rootScope,$http, $log,$q,myGl
                 pageInfo.totalPages = Math.ceil(pageInfo.totalMsgCnt / pageInfo.listPerPage);
                 pageInfo.totalPageSets = Math.ceil(pageInfo.totalPages / pageInfo.maxVisiblePages);
 
-                $rootScope.$broadcast('newCountArrived');
+                $rootScope.$broadcast('newCountArrived');//XXX
             })
             .error (function () {
                 console.log( "getSearchResultCount Error!: "  );
@@ -177,7 +177,7 @@ myServiceModule.factory('myHttpService', function($rootScope,$http, $log,$q,myGl
                 .error(function(err) {
                     //$log.error("write Error:",err);
                     deferred.reject(err);
-                    $rootScope.$broadcast('writeError',err);
+                    $rootScope.$broadcast('writeError',err);//XXX
                 });
 
             return deferred.promise;

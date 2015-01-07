@@ -23,7 +23,8 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
 
         $scope.disabledNext = 0;
         $scope.disabledLast = 0;
-        var onSearchingNow = false;
+        //var onSearchingNow = false;
+        $scope.onSearchingNow = false;
 
         //--------------------------------------------------------------
         var i = 0;
@@ -114,7 +115,7 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
             //console.log("moveToPreviousPage:$scope.pageInfo.currentPage:",$scope.pageInfo.currentPage );
             //console.log("moveToPreviousPage:$scope.pageInfo.maxVisiblePages:",$scope.pageInfo.maxVisiblePages );
             //pageInfo.currentPageSet 에서 -1 변경된 페이지의 인덱스가 0보다 작으면 pageSet을 감소 시킨다.
-            var checkPage = $scope.pageInfo.currentPage % $scope.pageInfo.maxVisiblePages ; //XXX
+            var checkPage = $scope.pageInfo.currentPage % $scope.pageInfo.maxVisiblePages ;
             //console.log("checkPage:",checkPage );
             if(checkPage==0){
                 if($scope.pageInfo.currentPageSet == 1 ) {
@@ -161,7 +162,7 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
             //console.log("directive: page changed!!!! ->", page); //debug
             $scope.pageInfo.currentPage = page;
 
-            if(onSearchingNow){
+            if($scope.onSearchingNow){
                 myHttpService.getSearchPagedList( page, $scope.pageInfo.listPerPage)
                     .then( function() {
                         myHttpService.getSearchResultCount();
@@ -176,11 +177,13 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
             }
         };
 
+        /*
         //--------------------------------------------------------------
         $scope.$on('onSearchingChanged', function (event, data) {
             //console.log('on : onSearchingChanged:', data); //debug
             onSearchingNow = data; //true, false
         });
+        */
 
         //--------------------------------------------------------------
         $scope.$on('newCountArrived', function (event, data) {
@@ -203,7 +206,15 @@ myDirectiveModule.directive('myPaginationDirective', function() {
             //countAllApiUrl:'@'
         },
 
-        controller: 'myPaginationController'
+        controller: 'myPaginationController',
+        link: function(scope, element, attrs, controllers) {
+            //console.log("link inviked");
+            //console.log("scope.$parent.onSearching=",scope.$parent.onSearching); //debug
+            scope.$watch("$parent.onSearching", function(val){
+                //console.log("onSearching changed!=", val); //debug
+                scope.onSearchingNow = val; //true, false
+            });
 
+        }
     };
 });
