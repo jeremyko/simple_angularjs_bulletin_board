@@ -204,7 +204,7 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
             var checkPageSet = pageInfo.currentPageSet * pageInfo.maxVisiblePages ;
             if( pageInfo.currentPage > checkPageSet ){
                 if(pageInfo.currentPageSet == pageInfo.totalPageSets ) {
-                    return; //skip
+                    return; //skipgit status
                 }
                 pageInfo.currentPageSet += 1;
             }
