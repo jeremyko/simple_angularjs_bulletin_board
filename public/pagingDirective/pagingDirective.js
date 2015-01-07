@@ -179,7 +179,7 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
 
             //check pageSet
             //pageInfo.currentPageSet 에서 -1 변경된 페이지의 인덱스가 0보다 작으면 pageSet을 감소 시킨다.
-            var checkPage = pageInfo.currentPage % pageInfo.listPerPage ;
+            var checkPage = pageInfo.currentPage % pageInfo.maxVisiblePages ;
             if(checkPage==0){
                 if(pageInfo.currentPageSet == 1 ) {
                     return; //skip
@@ -201,7 +201,7 @@ myDirectiveModule.controller('myPaginationController', ['$scope', '$location','$
 
             //check pageSet
             //pageInfo.currentPageSet 에서 +1 변경된 페이지의 인덱스가 현재 페이지set을 넘어가면 pageSet을 +1 시킨다.
-            var checkPageSet = pageInfo.currentPageSet * pageInfo.listPerPage ;
+            var checkPageSet = pageInfo.currentPageSet * pageInfo.maxVisiblePages ;
             if( pageInfo.currentPage > checkPageSet ){
                 if(pageInfo.currentPageSet == pageInfo.totalPageSets ) {
                     return; //skip
