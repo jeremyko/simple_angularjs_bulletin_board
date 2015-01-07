@@ -1,6 +1,26 @@
-###Simple bulletin board using AngularJS + Express
+###Simple bulletin board using AngularJS + Mongojs + Express
 
-![ScreenShot](http://3.bp.blogspot.com/-0rZ9BVX4JuI/VIZtcoT0qMI/AAAAAAAAKVo/igW3WqmMGZM/s1600/simpleAngularjsBB.png)
+
+## plain list type
+    git checkout plainListType
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/p1.png)
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/p2.png)
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/p3.png)
+
+## accordion type
+    git checkout accordionType
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/a1.png)
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/a2.png)
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/a3.png)
+
+![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/a4.png)
+
 
 #### 1. npm install
 #### 2. npm start
