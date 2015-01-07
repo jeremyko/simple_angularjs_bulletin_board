@@ -20,7 +20,7 @@ myControllerModule.controller('listCtrl',
             $scope.pageInfo=myGlobalDataService.pageInfo;
             var pageInfo = myGlobalDataService.pageInfo;
 
-            pageInfo.listPerPage = 3;
+            pageInfo.listPerPage = 5;
             $scope.guestMsgs = myGlobalDataService.msgDatas;
             //$scope.listPerPage = pageInfo.listPerPage ; //TEST
             $scope.viewHits = myGlobalDataService.viewHits;
