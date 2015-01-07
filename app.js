@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+//console.log( "app.get('env')=",app.get('env') ); //debug
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -34,6 +35,7 @@ app.use('/', routing_for_angluarjs);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
+    console.log("404 Error!!");//debug
     next(err);
 });
 
