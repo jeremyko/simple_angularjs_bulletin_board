@@ -17,18 +17,6 @@ angular.module('myRoutingModule', ['ngRoute'])
                     controller: 'listCtrl'
                 }).
 
-                when('/view/:msgObjId', {
-                    templateUrl: 'msgView/view.html',
-                    controller: 'viewCtrl'
-                }).
-                when('/write', {
-                    templateUrl: 'msgWrite/write.html',
-                    controller: 'writeCtrl'
-                }).
-                when('/edit/:msgObjId', {
-                    templateUrl: 'msgEdit/edit.html',
-                    controller: 'editCtrl'
-                }).
                 otherwise({
                     redirectTo: '/list/'
                 });

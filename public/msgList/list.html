@@ -1,145 +1,129 @@
-<!--<div   style="text-align: right;">총게시물 {{totalCount}}건</div>-->
+<div class="row">
+    <div class="col-md-4">
+        <H4><span class="search-result pull-left" ng-if="onSearching">Search Results / total count {{ pageInfo.totalMsgCnt }}</span></H4>
+    </div>
+    <div class="col-md-8">
+        <button class="btn btn-sm btn-warning pull-right" ng-if="onSearching"  ng-click="cancelSearch()">Cancel</button>
+        <span class="search-container pull-right">
+            <form  ng-submit="searchThis()">
+                <input type="text" ng-model="searchText" placeholder="search" tabindex="1" autocomplete="off" maxlength="240">
+            </form>
+
+        </span>
+    </div>
+</div>
+<br>
 
 <accordion close-others="oneAtATime">
+    <accordion-group  ng-repeat="msg in guestMsgs">
 
-    <!--
-    <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-        This content is straight in the template.
-    </accordion-group>
-    -->
+        <accordion-heading  >
+            <span ng-click="headerClicked(msg, $index)" >{{ msg.title }}</span>
 
-    <accordion-group ng-repeat="msg in guestMsgs">
-        <accordion-heading>  {{ msg.title }}
-            <div class="pull-right">
-                <span class="badge">{{msg.hits}} hits</span>
-            </div>
+            <span class="pull-right">
+                <span class="badge">{{viewHits[$index]}} hits</span>
+            </span>
         </accordion-heading>
 
-        <textarea readonly class="form-control" rows="10">{{msg.contents}}</textarea>
+
+        <textarea ng-if="editing" ng-model="msg.title" class="form-control"></textarea>
         <br>
-        <div class="pull-left">
-            <button class="btn btn-info btn-sm" ng-click="editMsg(msg._id)">
-                <span class="glyphicon  glyphicon-pencil"></span>  Edit
+        <textarea ng-model="msg.contents" ng-readonly="!editing"  class="form-control msgContents" rows="{{ msg.rows }}"></textarea>
+
+
+        <br>
+        <span class="pull-left">
+            <button ng-show="!editing" class="btn btn-info btn-sm" ng-click="changeViewToEdit($index )">
+                Edit
             </button>
 
-            <button class="btn btn-danger btn-sm" ng-click="deleteMsg(msg._id)">
-                <span class="glyphicon glyphicon-remove"></span>  Delete
+            <button ng-show="!editing" class="btn btn-danger btn-sm" ng-click="deleteMsg(msg._id)">
+                  Delete
             </button>
-        </div>
 
-        <div class="pull-right">
-            <span class="label label-info">{{msg.user}}</span>
-            <span class="label label-info">{{ msg.reg_date }}</span>
-        </div>
+            <button ng-show="editing" class="btn btn-primary btn-sm" ng-click="updateMsg(msg)">
+                  Save
+            </button>
 
+            <button ng-show="editing" class="btn btn-danger btn-sm" ng-click="cancelEdit($index)">
+                 Cancel
+            </button>
+        </span>
+
+        <span class="pull-right">
+            <span class="label label-primary">{{msg.user}}</span>
+            <span class="label label-primary">{{ msg.reg_date }}</span>
+        </span>
     </accordion-group>
 
-    <!--
-    <accordion-group heading>="{{ msg.title }}"  ng-repeat="msg in guestMsgs">
-        <textarea readonly data-role="none" class="form-control" rows="10">{{msg.contents}}</textarea>
-        <br>
-        <div class="pull-left">
-
-
-        <button class="btn btn-info btn-sm" ng-click="editMsg()">
-            <span class="glyphicon  glyphicon-pencil"></span>  Edit
-        </button>
-
-        <button class="btn btn-danger btn-sm" ng-click="deleteMsg()">
-            <span class="glyphicon glyphicon-remove"></span>  Delete
-        </button>
-        </div>
-
-        <div class="pull-right">
-
-        <div style="text-align :right">
-            <span class="label label-info">{{msg.user}}</span>
-            <span class="label label-info">{{ msg.reg_date }}</span>
-            <span class="badge">{{msg.hits}} hits</span>
-        </div>
-            </div>
-    </accordion-group>
--->
-    <!--
-    <accordion-group heading="Dynamic Body Content">
-        <p>The body of the accordion group grows to fit the contents</p>
-        <button class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
-        <div ng-repeat="item in items">{{item}}</div>
-    </accordion-group>
-
-    <accordion-group is-open="status.open">
-        <accordion-heading>
-            I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+    <accordion-group ng-show="!guestMsgs.length">
+        <accordion-heading  style="text-align :center" >
+            <span class="text-default">No data exists</span>
         </accordion-heading>
-        This is just some content to illustrate fancy headings.
     </accordion-group>
-    -->
 </accordion>
 
-<div class="panel panel-default">
+<div class="row">
+    <div class="col-md-6">
+        <my-pagination-directive max-visible-pages="5"
+                                 count-all-api-url="apis/countAll"
+                >
+        </my-pagination-directive>
+    </div>
 
 
+    <div class="col-md-4">
+        <!--
+        <div class="search-container">
+            <form id="search" ng-submit="searchThis()">
+                <input type="text" ng-model="searchText" placeholder="search" tabindex="1" autocomplete="off" maxlength="240">
+                <button class="btn btn-sm btn-primary" ng-click="search()">Search</button>
+            </form>
+        </div>
+        -->
+    </div>
 
-    <!-- ///////////////////////////////////////////////////// -->
-<!--
-    <table class="table table-hover table-condensed" >
-        <thead>
-        <tr>
-            <th width=20>#</th>
-            <th width=120>Title</th>
-            <th width=50>User</th>
-            <th width=70>Reg Date</th>
-            <th width=20>Hits</th>
-        </tr>
-        </thead>
 
-       <tbody>
-        <tr ng-repeat="msg in guestMsgs">
-            <td width=20> {{listIndexAry[ $index ] }}</td>
-            <td width=120>
-                <a href="#/view/{{msg._id}}">{{msg.title}}</a>
-            </td>
-
-            <td width=50>{{msg.user}}</td>
-            <td width=70><small>{{msg.reg_date}}</small></td>
-            <td width=20><span class="badge">{{msg.hits}}</span></td>
-
-        </tr>
-        <tr ng-show="!guestMsgs.length">
-            <td colspan="6" style="text-align :center">
-                <span class="text-warning">No data exists.</span>
-            </td>
-        </tr>
-       </tbody>
-    </table>
--->
+    <div class="col-md-2">
+        <button class="btn pull-right btn-primary btn-sm"  ng-click="writeMsg()">
+            <span class="glyphicon glyphicon-pencil"></span> Write
+        </button>
+    </div>
 
 </div>
 
-<div class="pull-left">
-    <table>
-        <tr>
-            <td>
-                <my-pagination-directive max-visible-pages="5"
-                                         count-all-api-url="apis/countAll"
-                                         >
-                </my-pagination-directive>
-            </td>
-        </tr>
-    </table>
-</div>
 
-<div class="pull-right">
-    <table>
-        <tr>
-            <td>
-                <button class="btn btn-primary btn-sm" style="margin: 0;" ng-click="GoToUrl('/write')">
-                    <span class="glyphicon glyphicon-pencil"></span> Write
-                </button>
-            </td>
-        </tr>
-    </table>
-</div>
+<!-- modal dialog for write new msg -->
+<script type="text/ng-template" id="myModalContent.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">write message</h3>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <input type="text" id="title" placeholder="글 제목" class="form-control"  ng-model="newMsgData.title" auto-focus />
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <textarea id="detailedContents" class="form-control" rows="15"  ng-model="newMsgData.contents"></textarea>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12" align="right">
+                <button class="btn btn-sm btn-primary" ng-click="saveNewMsg()">OK</button>
+                <button class="btn btn-sm btn-warning" ng-click="cancelNewMsg()">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+
+</script>
+
 
 
 

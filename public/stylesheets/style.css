@@ -1,5 +1,13 @@
-a {
-  color: #00B7FF;
+/*
+.ng-scope  {
+    border: 1px solid red;
+    margin: 3px;
+}
+*/
+
+body {
+    background-color: #11121b;
+    color: #f4f0d0;
 }
 
 input[type="text"] {
@@ -8,11 +16,46 @@ input[type="text"] {
     line-height: 30px;
 }
 
-
-/*
-.ng-scope  {
-    border: 1px solid red;
-    margin: 3px;
+.panel-default > .panel-heading {
+    background-color: #3f425a;
+    color: #b2d8d4;
 }
-*/
 
+.badge {
+    background-color: #b2d8d4;
+    color: #11121b;
+}
+
+.msgContents[readonly] {
+    background-color: #e5ebfe;
+    cursor:default;
+    opacity: 1;
+
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.panel-body {
+    background-color: #e5ebfe;
+    padding: 15px;
+}
+
+.modal-content {
+    height: 530px;
+    background-color: #e5ebfe;
+    padding: 5px;
+    color:#3f425a;
+}
+
+.search-container {
+    color:#3f425a;
+}
+
+.search-result {
+    color: #ff4c20;
+}

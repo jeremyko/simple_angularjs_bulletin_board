@@ -5,18 +5,18 @@
 var my_utils={};
 
 my_utils.getTimeStamp =  function () {
-    var d = new Date();
+    var date = new Date();
 
-    var s =
-        leadingZeros(d.getFullYear(), 4) + '-' +
-        leadingZeros(d.getMonth() + 1, 2) + '-' +
-        leadingZeros(d.getDate(), 2) + ' ' +
+    var ts =
+        leadingZeros(date.getFullYear(), 4) + '-' +
+        leadingZeros(date.getMonth() + 1, 2) + '-' +
+        leadingZeros(date.getDate(), 2) + ' ' +
 
-        leadingZeros(d.getHours(), 2) + ':' +
-        leadingZeros(d.getMinutes(), 2) + ':' +
-        leadingZeros(d.getSeconds(), 2);
+        leadingZeros(date.getHours(), 2) + ':' +
+        leadingZeros(date.getMinutes(), 2) + ':' +
+        leadingZeros(date.getSeconds(), 2);
 
-    return s;
+    return ts;
 };
 
 function leadingZeros (n, digits) {

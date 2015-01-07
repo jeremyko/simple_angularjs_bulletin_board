@@ -14,7 +14,7 @@ var my_utils = require('./my-common-utils'); //date functions
 router.get('/countAll', function(req, res) {
     db.GuestBookMsgs.count(function(error,result){
         if(!error) {
-            console.log("count :"+result);
+            //console.log("count :"+result);
             res.json(result);
         }
     });
@@ -22,8 +22,8 @@ router.get('/countAll', function(req, res) {
 
 //-----------------------------------------------------------------------------
 router.get('/list/:page/:listPerPage', function(req, res) {
-    console.log('******** list page , req.params.page :'+ req.params.page  ); //debug
-    console.log('******** list page , req.params.listPerPage :'+ req.params.listPerPage  ); //debug
+    //console.log('******** list page , req.params.page :'+ req.params.page  ); //debug
+    //console.log('******** list page , req.params.listPerPage :'+ req.params.listPerPage  ); //debug
 
     if(req.params.page==1){
         db.GuestBookMsgs.find().sort({_id:-1}).limit( parseInt(req.params.listPerPage)  , function(err, page_msgs) {
@@ -47,9 +47,71 @@ router.get('/list/:page/:listPerPage', function(req, res) {
 
 });
 
+
 //-----------------------------------------------------------------------------
-router.get('/view/:msgObjId', function(req, res) {
-    console.log('******** view ,req.params.msgObjId:'+req.params.msgObjId); //debug
+router.get('/countSearchResult/:searchText', function(req, res) {
+    console.log('******** countSearchResult , req.params.searchText :' + req.params.searchText); //debug
+    var searchThis = new RegExp(req.params.searchText) ;
+    db.GuestBookMsgs.count( { $or: [{user:searchThis },
+                                    {title:searchThis},
+                                    {contents: searchThis}]},
+                function(error,result){
+                    if(!error) {
+                        console.log("countSearchResult :"+result);
+                        res.json(result);
+                    }
+                });
+});
+
+//-----------------------------------------------------------------------------
+router.get('/searchList/:searchText/:page/:listPerPage', function(req, res) {
+    //console.log('******** searchList , req.params.searchText :'+ req.params.searchText  ); //debug
+    //console.log('******** searchList , req.params.page :'+ req.params.page  ); //debug
+    //console.log('******** searchList , req.params.listPerPage :'+ req.params.listPerPage  ); //debug
+
+    var searchThis = new RegExp(req.params.searchText) ;
+
+    console.log("searchThis=",searchThis); //debug
+
+    if(req.params.page==1){
+        db.GuestBookMsgs.find( { $or: [ {user:searchThis },
+                                        {title:searchThis},
+                                        {contents: searchThis}]}
+                             )
+                        .sort({_id:-1})
+                        .limit( parseInt(req.params.listPerPage)
+            ,function(err, page_msgs) {
+                if (err) {
+                    console.log('******** list page error ************'); //debug
+                    res.send(err)
+                }
+                console.log(page_msgs);//debug
+                res.json(page_msgs);
+            });
+    }else{
+        db.GuestBookMsgs.find(  { $or: [ {user:searchThis },
+                                {title:searchThis},
+                                {contents: searchThis}]}
+                             )
+                    .sort({_id:-1})
+                    .skip((req.params.page-1)*parseInt(req.params.listPerPage)  )
+                    .limit(parseInt(req.params.listPerPage)
+            ,function(err, page_msgs) {
+                if (err) {
+                    console.log('******** list page error ************'); //debug
+                    res.send(err)
+                }
+
+                res.json(page_msgs);
+            });
+    }
+
+    //res.end(); //test
+});
+
+//-----------------------------------------------------------------------------
+router.get('/updateHits/:msgObjId', function(req, res) {
+    //console.log('******** updateHits ,req.params.msgObjId:'+req.params.msgObjId); //debug
     //update hits
     db.GuestBookMsgs.update( {"_id": ObjectId(req.params.msgObjId)}, {$inc:{hits:1}},
         function(err, one_guest_msg) {
@@ -57,22 +119,17 @@ router.get('/view/:msgObjId', function(req, res) {
                 console.log('******** update hits ,Error!'+err); //debug
                 res.send(err)
             }
+            res.end(); //필요하다.
         });
-
-    //findOne!!
-    db.GuestBookMsgs.findOne( {"_id": ObjectId(req.params.msgObjId)}, function(err, one_guest_msg) {
-        if (err) {
-            console.log('******** view ,Error!'+err); //debug
-            res.send(err)
-        }
-        res.json(one_guest_msg);
-    });
 });
 
 
 //-----------------------------------------------------------------------------
 router.post('/write', function(req, res) {
     console.log('******** write : '+my_utils.getTimeStamp()); //debug
+    //console.log('user : '+req.body.user); //debug
+    //console.log('title : '+req.body.title); //debug
+    //console.log('contents : '+req.body.contents); //debug
     db.GuestBookMsgs.save({
             user  : req.body.user,
             title : req.body.title,
@@ -89,9 +146,10 @@ router.post('/write', function(req, res) {
         });
 });
 
+
 //-----------------------------------------------------------------------------
 router.delete('/:msgObjId', function(req, res) {
-    console.log('******** delete ,req.params.msgObjId:'+req.params.msgObjId); //debug
+    //console.log('******** delete ,req.params.msgObjId:'+req.params.msgObjId); //debug
     //findOne!!
     db.GuestBookMsgs.remove( {"_id": ObjectId(req.params.msgObjId)}, function(err, data) {
         if (err) {
@@ -104,7 +162,7 @@ router.delete('/:msgObjId', function(req, res) {
 
 //-----------------------------------------------------------------------------
 router.put('/', function(req, res) {
-    console.log('******** update : _id ==>'+req.body._id); //debug
+    //console.log('******** update : _id ==>'+req.body._id); //debug
 
     db.GuestBookMsgs.findOne(
         {"_id": ObjectId(req.body._id)},
@@ -131,8 +189,6 @@ router.put('/', function(req, res) {
                     res.end(); //필요하다.
                 });
         });
-
-
 });
 
 //-----------------------------------------------------------------------------
