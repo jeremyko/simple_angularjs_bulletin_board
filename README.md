@@ -1,4 +1,4 @@
-###Simple bulletin board using AngularJS + Mongojs + Express
+### Simple bulletin board using AngularJS + Mongojs + Express
 
 ![ScreenShot](https://github.com/jeremyko/simple_angularjs_bulletin_board/blob/master/screenshot/a1.png)
 
